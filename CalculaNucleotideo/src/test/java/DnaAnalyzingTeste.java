@@ -65,5 +65,40 @@ public class DnaAnalyzingTeste
         });
     }
 
+      @Test
+    @DisplayName("Verifica o comportamento com um arquivo vazio")
+    public void testArquivoVazio() throws IOException
+    {
+        String pathEmpty = "emptySequence.txt";
+        new File(pathEmpty).createNewFile();
+        DnaAnalyzing analyzer = new DnaAnalyzing();
+        int[] resultado = analyzer.calculaNucleotideos(pathEmpty);
+        assertNotNull(resultado);
+        int[] esperado = {0, 0, 0, 0, 0};
+        assertArrayEquals(esperado, resultado);
+        new File(pathEmpty).delete();
+    }
+
+    @Test
+    @DisplayName("Verifica o comportamento com sequência muito longa")
+    public void testSequenciaMuitoLonga() throws IOException
+    {
+        String pathLongSequence = "longSequence.txt";
+        try (FileWriter writer = new FileWriter(pathLongSequence))
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 1000000; i++)
+            {
+                sb.append("A");
+            }
+            writer.write(sb.toString());
+        }
+        DnaAnalyzing analyzer = new DnaAnalyzing();
+        int[] resultado = analyzer.calculaNucleotideos(pathLongSequence);
+        int[] esperado = {1000000, 0, 0, 0, 0};
+        assertArrayEquals(esperado, resultado);
+        new File(pathLongSequence).delete();
+    }
+
 
 }
